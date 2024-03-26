@@ -43,7 +43,8 @@
         app:layout_constraintEnd_toEndOf="@+id/recyclerView2"
         app:layout_constraintStart_toStartOf="@+id/recyclerView2"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.37" />
+        app:layout_constraintVertical_bias="0.37"
+        android:contentDescription="@string/no_image" />
 
 
     <TextView
