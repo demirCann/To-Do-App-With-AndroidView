@@ -48,13 +48,12 @@ class ListFragment : Fragment() {
         })
 
 
-
         binding.floatingActionButton.setOnClickListener {
             findNavController().navigate(R.id.action_listFragment_to_addFragment)
         }
 
 
-
+        
 
 
         return view

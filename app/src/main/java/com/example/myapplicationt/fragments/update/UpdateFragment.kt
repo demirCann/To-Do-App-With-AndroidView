@@ -1,5 +1,6 @@
 package com.example.myapplicationt.fragments.update
 
+import android.app.AlertDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -59,9 +60,12 @@ class UpdateFragment : Fragment() {
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                if (menuItem.itemId == R.id.menu_save) {
-                    updateItem()
+
+                when(menuItem.itemId) {
+                    R.id.menu_save -> updateItem()
+                    R.id.menu_delete -> confirmItemRemoval()
                 }
+
                 return true
             }
 
@@ -92,6 +96,20 @@ class UpdateFragment : Fragment() {
             Toast.makeText(requireContext(), "Please fill out all fields", Toast.LENGTH_SHORT).show()
         }
 
+    }
+
+    private fun confirmItemRemoval() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Delete ${args.passedItem.title}?")
+        builder.setMessage("Are you sure you want to remove '${args.passedItem.title}'?")
+
+        builder.setPositiveButton("Yes") {_,_ ->
+            mToDoViewModel.deleteItem(args.passedItem)
+            Toast.makeText(requireContext(),"Successfully Removed: ${args.passedItem.title}", Toast.LENGTH_SHORT).show()
+            findNavController().navigate(R.id.action_updateFragment_to_listFragment)
+        }
+        builder.setNegativeButton("No") {_,_ -> }
+        builder.create().show()
     }
 
 
