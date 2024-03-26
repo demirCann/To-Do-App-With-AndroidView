@@ -8,15 +8,26 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.navigation.fragment.findNavController
 import com.example.myapplicationt.R
+import com.example.myapplicationt.data.models.ToDoData
+import com.example.myapplicationt.data.viewmodel.ToDoViewModel
 import com.example.myapplicationt.databinding.FragmentAddBinding
+import com.example.myapplicationt.fragments.SharedViewModel
 
 class AddFragment : Fragment() {
 
+
+    private val mToDoViewModel: ToDoViewModel by viewModels()
+    private val sharedViewModel: SharedViewModel by viewModels()
+
     private var _binding: FragmentAddBinding? = null
+
     /*
 
     View Binding yaparken fragment binding sınıfımızın nullable nesnesi non-null bir tür döndüren
@@ -34,11 +45,11 @@ class AddFragment : Fragment() {
     temizlenebilir.
 
      */
-    private val binding get() =  _binding!!
+    private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentAddBinding.inflate(inflater, container, false)
         val view = binding.root
         return view
@@ -53,14 +64,43 @@ class AddFragment : Fragment() {
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                if (menuItem.itemId == android.R.id.home) // Back butonun id'sini belirtir.
-                {
+                if (menuItem.itemId == R.id.menu_add) {
+                    insertDataToDb()
+                } else if (menuItem.itemId == android.R.id.home) { // Back button'un id'sini belirtir.
                     requireActivity().onBackPressedDispatcher.onBackPressed()
                 }
                 return true
             }
 
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
+    private fun insertDataToDb() {
+        val title = binding.titleEt.text.toString()
+        val priority = binding.prioritiesSpinner.selectedItem.toString()
+        val description = binding.descriptionEt.text.toString()
+
+        val allFieldsFull = sharedViewModel.verifyDataFromUser(title, description)
+
+        if (allFieldsFull) {
+
+            // Inserting data to database
+            val newData = ToDoData(
+                0,
+                title,
+                sharedViewModel.parsePriority(priority),
+                description
+            )
+            mToDoViewModel.insertData(newData)
+            Toast.makeText(requireActivity(), "Successfully added!", Toast.LENGTH_SHORT).show()
+
+            // Navigating back
+            findNavController().navigate(R.id.action_addFragment_to_listFragment)
+
+        } else {
+            Toast.makeText(requireActivity(), "Please fill out all fields.", Toast.LENGTH_SHORT)
+                .show()
+        }
     }
 
     override fun onDestroyView() {

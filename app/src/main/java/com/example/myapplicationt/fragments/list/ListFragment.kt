@@ -10,15 +10,25 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplicationt.R
+import com.example.myapplicationt.data.viewmodel.ToDoViewModel
 import com.example.myapplicationt.databinding.FragmentListBinding
+import com.example.myapplicationt.fragments.list.adapter.ListAdapter
 
 class ListFragment : Fragment() {
 
     private var _binding: FragmentListBinding? = null
     private val binding get() = _binding!!
+
+    private val mToDoViewModel: ToDoViewModel by viewModels()
+
+    private val adapter: ListAdapter by lazy { ListAdapter() }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -27,6 +37,16 @@ class ListFragment : Fragment() {
 
         _binding = FragmentListBinding.inflate(inflater, container, false)
         val view = binding.root
+
+
+        val recyclerView = binding.recyclerView2
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(requireActivity())
+
+        mToDoViewModel.getAllData.observe(viewLifecycleOwner, Observer { data ->
+            adapter.setData(data)
+        })
+
 
 
         binding.floatingActionButton.setOnClickListener {
