@@ -62,10 +62,10 @@ dependencies {
     //implementation (libs.androidx.navigation.ui.ktx)
 
     // Room components
-    implementation ("androidx.room:room-runtime:2.6.1")
-    kapt("androidx.room:room-compiler:2.6.1")
-    implementation ("androidx.room:room-ktx:2.6.1")
-    androidTestImplementation ("androidx.room:room-testing:2.6.1")
+    implementation (libs.room.runtime)
+    kapt(libs.room.compiler)
+    implementation (libs.room.ktx)
+    androidTestImplementation (libs.room.testing)
 
 
     /*
